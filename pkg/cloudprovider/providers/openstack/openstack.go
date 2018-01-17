@@ -160,6 +160,7 @@ func (cfg Config) toAuthOptions() gophercloud.AuthOptions {
 		Password:         cfg.Global.Password,
 		TenantID:         cfg.Global.TenantId,
 		TenantName:       cfg.Global.TenantName,
+		TrustId:		  cfg.Global.TrustId,
 		DomainID:         cfg.Global.DomainId,
 		DomainName:       cfg.Global.DomainName,
 
@@ -176,6 +177,7 @@ func (cfg Config) toAuth3Options() tokens3.AuthOptions {
 		Password:         cfg.Global.Password,
 		DomainID:         cfg.Global.DomainId,
 		DomainName:       cfg.Global.DomainName,
+		TrustId:		  cfg.Global.TrustId,
 		AllowReauth:      true,
 	}
 }

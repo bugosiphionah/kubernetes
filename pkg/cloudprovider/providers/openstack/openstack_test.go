@@ -559,6 +559,28 @@ func TestVolumes(t *testing.T) {
 
 }
 
+func TestVolumesWithTrustID(t *testing.T) {
+	cfg, ok := configFromEnv()
+	if !ok {
+		t.Skipf("No config found in environment")
+	}
+
+	os, err := newOpenStack(cfg)
+	if err != nil {
+		t.Fatalf("Failed to construct/authenticate OpenStack: %s", err)
+	}
+
+	tags := map[string]string{
+		"test": "value",
+	}
+	vol, _, _, err := os.CreateVolume("kubernetes-test-volume-"+rand.String(10), 1, "", "", &tags, "admin")
+	if err != nil {
+		t.Fatalf("Cannot create a new Cinder volume: %v", err)
+	}
+	t.Logf("Volume (%s) created\n", vol)
+
+}
+
 func TestInstanceIDFromProviderID(t *testing.T) {
 	testCases := []struct {
 		providerID string

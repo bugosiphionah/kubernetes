@@ -84,6 +84,7 @@ type VolumeCreateOpts struct {
 	Name         string
 	VolumeType   string
 	Metadata     map[string]string
+	TrustID      string
 }
 
 const (
@@ -107,6 +108,7 @@ func (volumes *VolumesV1) createVolume(opts VolumeCreateOpts) (string, string, e
 		VolumeType:       opts.VolumeType,
 		AvailabilityZone: opts.Availability,
 		Metadata:         opts.Metadata,
+		TrustID:         opts.TrustID,
 	}
 
 	vol, err := volumes_v1.Create(volumes.blockstorage, create_opts).Extract()
@@ -127,6 +129,7 @@ func (volumes *VolumesV2) createVolume(opts VolumeCreateOpts) (string, string, e
 		VolumeType:       opts.VolumeType,
 		AvailabilityZone: opts.Availability,
 		Metadata:         opts.Metadata,
+		TrustID:         opts.TrustID,
 	}
 
 	vol, err := volumes_v2.Create(volumes.blockstorage, create_opts).Extract()
@@ -146,7 +149,7 @@ func (volumes *VolumesV3) createVolume(opts VolumeCreateOpts) (string, string, e
 		Size:             opts.Size,
 		VolumeType:       opts.VolumeType,
 		AvailabilityZone: opts.Availability,
-		Metadata:         opts.Metadata,
+		TrustID:         opts.TrustID,
 	}
 
 	vol, err := volumes_v3.Create(volumes.blockstorage, create_opts).Extract()
@@ -415,7 +418,7 @@ func (os *OpenStack) getVolume(volumeID string) (Volume, error) {
 }
 
 // CreateVolume creates a volume of given size (in GiB)
-func (os *OpenStack) CreateVolume(name string, size int, vtype, availability string, tags *map[string]string) (string, string, bool, error) {
+func (os *OpenStack) CreateVolume(name string, size int, vtype, availability string, tags *map[string]string, trustID ...int) (string, string, bool, error) {
 	volumes, err := os.volumeService("")
 	if err != nil {
 		return "", "", os.bsOpts.IgnoreVolumeAZ, fmt.Errorf("unable to initialize cinder client for region: %s, err: %v", os.region, err)
@@ -426,6 +429,7 @@ func (os *OpenStack) CreateVolume(name string, size int, vtype, availability str
 		Size:         size,
 		VolumeType:   vtype,
 		Availability: availability,
+		TrustID:      trustID, 
 	}
 	if tags != nil {
 		opts.Metadata = *tags
